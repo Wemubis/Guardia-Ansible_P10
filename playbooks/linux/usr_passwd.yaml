@@ -5,7 +5,7 @@
   tasks:
     - name: Generate a random username
       set_fact:
-        random_username: "user{{ ansible_uuid.split('-')[4] }}"
+        random_username: "user{{ ansible_product_uuid | regex_replace('-', '') }}"
 
     - name: Generate a random password
       set_fact:
