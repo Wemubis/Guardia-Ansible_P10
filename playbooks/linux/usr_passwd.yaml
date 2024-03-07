@@ -5,7 +5,7 @@
   tasks:
     - name: Generate a random username
       set_fact:
-        random_username: "user{{ ansible_product_uuid | regex_replace('-', '') }}"
+        random_username: "user{{ ansible_date_time.epoch }}{{ range(10000) | random | string }}"
 
     - name: Generate a random password
       set_fact:
@@ -24,6 +24,6 @@
 
     - name: Save username and password to password.txt file
       lineinfile:
-        path: password.txt
+        path: "{{ pwd_file }}"
         line: "{{ random_username }}:{{ random_password }}"
         create: yes
