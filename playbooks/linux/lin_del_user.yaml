@@ -1,0 +1,20 @@
+---
+- name: Remove previously added users
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Read password.txt file
+      slurp:
+        path: password.txt
+      register: password_file
+
+    - name: Parse content of password.txt file
+      set_fact:
+        users_passwords: "{{ (password_file['content'] | b64decode).split('\n') }}"
+
+    - name: Remove previously added users
+      user:
+        name: "{{ item.split(':')[0] }}"
+        state: absent
+      loop: "{{ users_passwords }}"
+      when: item != ''

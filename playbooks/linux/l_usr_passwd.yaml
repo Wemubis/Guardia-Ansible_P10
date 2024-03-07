@@ -1,0 +1,38 @@
+---
+- name: Create a new user with random password
+  hosts: linux
+  gather_facts: no
+  tasks:
+    - name: Generate a random number for username
+      set_fact:
+        random_number: "{{ 10000 | random }}"
+      vars:
+        random_username: "user{{ random_number }}"
+
+    - name: Check if the user already exists
+      command: "id {{ random_username }}"
+      ignore_errors: true
+      register: user_exists_result
+
+    - name: Increment random number until a unique username is found
+      loop:
+        - "{{ range(1, 10000) }}"
+      when: user_exists_result.rc != 0
+      set_fact:
+        random_username: "user{{ item + random_number }}"
+
+    - name: Generate a random password
+      set_fact:
+        random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
+
+    - name: Create a new user
+      user:
+        name: "{{ random_username }}"
+        password: "{{ random_password | password_hash('sha512') }}"
+        state: present
+
+    - name: Save username and password to password.txt file
+      lineinfile:
+        path: password.txt
+        line: "{{ random_username }}:{{ random_password }}"
+        create: yes

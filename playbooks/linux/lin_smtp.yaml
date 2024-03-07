@@ -1,0 +1,36 @@
+---
+- name: Install SNMP on AlmaLinux
+  hosts: linux
+
+  tasks:
+    - name: Check if SNMP is installed
+      command: "rpm -q net-snmp"
+      register: snmp_status
+      ignore_errors: true
+
+    - name: Install SNMP packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - net-snmp
+        - net-snmp-utils
+      when: snmp_status.rc != 0
+
+    - name: Generate SNMPd configuration file
+      template:
+        src: snmpd.conf.j2
+        dest: /etc/snmp/snmpd.conf
+      notify: Restart SNMP service
+
+    - name: Start SNMP service
+      service:
+        name: snmpd
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Restart SNMP service
+      service:
+        name: snmpd
+        state: restarted
