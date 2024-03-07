@@ -1,23 +1,68 @@
 #!/bin/bash
 
-# Path playbooks Ansible
-LIN_PLAYBOOKS_DIR="/root/playbooks/linux"
-WIN_PLAYBOOKS_DIR="/root/playbooks/windows"
+# Define playbook directories
+PLAYBOOKS_DIR="/root/playbooks"
+LIN_DIR="$PLAYBOOKS_DIR/linux"
+WIN_DIR="$PLAYBOOKS_DIR/windows"
 
-# List of playbooks
-LIN_PLAYBOOKS=("l_smtp.yml" "l_user_passwd.yml")
+# Lists of playbooks to install and uninstall for Linux and Windows
+I_LINUX=("l_smtp.yml" "l_user_passwd.yml")
+I_WINDOWS=()
+U_LINUX=()
+U_WINDOWS=()
 
-# Verify if playbooks exist
-for playbook in "${LIN_PLAYBOOKS[@]}"; do
-    if [ ! -f "$PLAYBOOKS_DIR/$LIN_PLAYBOOKS" ]; then
-        echo "[-] Playbook $LIN_PLAYBOOKS n'existe pas dans $LIN_PLAYBOOKS_DIR."
-        exit 1
+# Function to check the existence of playbooks
+check_playbooks_existence() {
+    local playbook_dir=$1
+    shift
+    local playbooks=("$@")
+
+    for playbook in "${playbooks[@]}"; do
+        if [ ! -f "$playbook_dir/$playbook" ]; then
+            echo "[-] Playbook $playbook does not exist in $playbook_dir."
+            exit 1
+        fi
+    done
+}
+
+# Function to execute playbooks
+execute_playbooks() {
+    local playbook_dir=$1
+    shift
+    local playbooks=("$@")
+
+    if [ ${#playbooks[@]} -gt 0 ]; then
+        echo "Executing playbooks for $playbook_dir..."
+        for playbook in "${playbooks[@]}"; do
+            ansible-playbook -i your_inventory_file "$playbook_dir/$playbook"
+        done
+        echo "Playbooks executed successfully for $playbook_dir."
     fi
-done
+}
 
-# Execute playbooks Ansible
-echo "Execution of linux playbooks :"
-for playbook in "${LIN_PLAYBOOKS[@]}"; do
-    echo "[-] $LIN_PLAYBOOKS ..."
-    ansible-playbook -i inventory "$LIN_PLAYBOOKS_DIR/$LIN_PLAYBOOKS"
-done
+# Check the number of arguments
+if [ "$#" -ne 1 ]; then
+    echo "Invalid argument. Usage: $0 [-i | --install | -r | --remove]"
+    exit 1
+fi
+
+# Check existence of playbooks based on action to be performed
+if [[ "$1" == "-i" || "$1" == "--install" ]]; then
+    check_playbooks_existence "$LIN_DIR" "${I_LINUX[@]}"
+    check_playbooks_existence "$WIN_DIR" "${I_WINDOWS[@]}"
+elif [[ "$1" == "-r" || "$1" == "--remove" ]]; then
+    check_playbooks_existence "$LIN_DIR" "${U_LINUX[@]}"
+    check_playbooks_existence "$WIN_DIR" "${U_WINDOWS[@]}"
+fi
+
+# Execute appropriate playbooks based on provided argument
+case "$1" in
+    -i | --install)
+        execute_playbooks "$LIN_DIR" "${I_LINUX[@]}"
+        execute_playbooks "$WIN_DIR" "${I_WINDOWS[@]}"
+        ;;
+    -r | --remove)
+        execute_playbooks "$LIN_DIR" "${U_LINUX[@]}"
+        execute_playbooks "$WIN_DIR" "${U_WINDOWS[@]}"
+        ;;
+esac
