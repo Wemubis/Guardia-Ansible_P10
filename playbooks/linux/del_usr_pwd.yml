@@ -1,0 +1,25 @@
+---
+- name: Delete users and password file
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    # List all users and filter those starting with "user"
+    - name: Get list of users starting with "user"
+      command: "getent passwd | grep '^user'"
+      register: users_to_delete
+      changed_when: false
+      ignore_errors: true
+
+    # Delete users
+    - name: Delete users starting with "user"
+      user:
+        name: "{{ item.split(':')[0] }}"
+        state: absent
+      loop: "{{ users_to_delete.stdout_lines }}"
+      when: users_to_delete is succeeded
+
+    # Delete the password file
+    - name: Delete the password file
+      file:
+        path: "password.txt"
+        state: absent
