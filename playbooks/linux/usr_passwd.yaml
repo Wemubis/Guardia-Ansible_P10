@@ -3,8 +3,9 @@
   hosts: linux
   gather_facts: yes
   tasks:
-    - name: Create a new user with random password
-      random_username: "user{{ ansible_uuid.split('-')[4] }}"
+    - name: Generate a random username
+      set_fact:
+        random_username: "user{{ ansible_uuid.split('-')[4] }}"
 
     - name: Generate a random password
       set_fact:
