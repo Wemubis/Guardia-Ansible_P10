@@ -5,7 +5,7 @@
   tasks:
     # List all users and filter those starting with "user"
     - name: Get list of users starting with "user"
-      command: "getent passwd | grep '^user'"
+      shell: "getent passwd | grep '^user'"
       register: users_to_delete
       changed_when: false
       ignore_errors: true
