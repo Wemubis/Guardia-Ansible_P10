@@ -1,14 +1,17 @@
 #!/bin/bash
 
+# Define some variables
+INVENTORY="inventory"
+
 # Define playbook directories
 PLAYBOOKS_DIR="/root/playbooks"
 LIN_DIR="$PLAYBOOKS_DIR/linux"
 WIN_DIR="$PLAYBOOKS_DIR/windows"
 
 # Lists of playbooks to install and uninstall for Linux and Windows
-I_LINUX=("l_smtp.yml" "l_user_passwd.yml")
+I_LINUX=("snmp.yml")
 I_WINDOWS=()
-U_LINUX=()
+U_LINUX=("del_snmp.yml")
 U_WINDOWS=()
 
 # Function to check the existence of playbooks
@@ -34,7 +37,7 @@ execute_playbooks() {
     if [ ${#playbooks[@]} -gt 0 ]; then
         echo "Executing playbooks for $playbook_dir..."
         for playbook in "${playbooks[@]}"; do
-            ansible-playbook -i your_inventory_file "$playbook_dir/$playbook"
+            ansible-playbook -i "$INVENTORY" "$playbook_dir/$playbook"
         done
         echo "Playbooks executed successfully for $playbook_dir."
     fi
