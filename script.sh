@@ -9,9 +9,9 @@ LIN_DIR="$PLAYBOOKS_DIR/linux"
 WIN_DIR="$PLAYBOOKS_DIR/windows"
 
 # Lists of playbooks to install and uninstall for Linux and Windows
-I_LINUX=("snmp.yml")
+I_LINUX=("snmp.yml" "usr_pwd.yml")
 I_WINDOWS=()
-U_LINUX=("del_snmp.yml")
+U_LINUX=("del_snmp.yml" "del_usr_pwd.yml")
 U_WINDOWS=()
 
 # Function to check the existence of playbooks
