@@ -1,17 +1,14 @@
 ---
 - name: Create a new user with random password
   hosts: linux
-  gather_facts: no
+  gather_facts: yes
   tasks:
     - name: Create a new user with random password
-      hosts: localhost
-      gather_facts: no
-    vars:
       random_username: "user{{ ansible_uuid.split('-')[4] }}"
-    tasks:
-      - name: Generate a random password
-        set_fact:
-          random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
+
+    - name: Generate a random password
+      set_fact:
+        random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
 
     - name: Check if the user already exists
       command: "id {{ random_username }}"
