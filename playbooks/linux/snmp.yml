@@ -4,7 +4,7 @@
 
   tasks:
     - name: Check if SNMP is installed
-      command: "rpm -q net-snmp"
+      shell: "rpm -q net-snmp"
       register: snmp_status
       ignore_errors: true
 
