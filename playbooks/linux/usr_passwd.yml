@@ -1,29 +1,27 @@
 ---
-- name: Create a new user with random password
+- name: Create or update user with random password
   hosts: linux
-  gather_facts: yes
+
   tasks:
-    - name: Generate a random username
-      set_fact:
-        random_username: "user{{ ansible_date_time.epoch }}{{ range(10000) | random | string }}"
+    - name: Check if the user exists
+      command: "id {{ username }}"
+      register: user_exists
+      ignore_errors: true
 
     - name: Generate a random password
       set_fact:
         random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
 
-    - name: Check if the user already exists
-      command: "id {{ random_username }}"
-      ignore_errors: true
-      register: user_exists_result
-
-    - name: Create a new user
+    - name: Create or update user
       user:
-        name: "{{ random_username }}"
+        name: "{{ username }}"
         password: "{{ random_password | password_hash('sha512') }}"
         state: present
+        update_password: always
 
     - name: Save username and password to password.txt file
-      lineinfile:
+      blockinfile:
         path: "{{ pwd_file }}"
-        line: "{{ random_username }}:{{ random_password }}"
-        create: yes
+        block: |
+          Username: {{ username }}
+          Password: {{ random_password }}
