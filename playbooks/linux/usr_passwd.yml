@@ -20,8 +20,11 @@
         update_password: always
 
     - name: Save username and password to password.txt file
-      blockinfile:
-        path: "{{ pwd_file }}"
-        block: |
+      lineinfile:
+        path: password.txt
+        line: |
           Username: {{ username }}
           Password: {{ random_password }}
+        create: yes
+        state: present
+
