@@ -1,24 +1,19 @@
 ---
-- name: Delete users and password file
+- name: Delete user and password file
   hosts: linux
-  gather_facts: no
+
   tasks:
-    # List all users and filter those starting with "user"
-    - name: Get list of users starting with "user"
-      shell: "getent passwd | grep '^user'"
-      register: users_to_delete
-      changed_when: false
+    - name: Check if the user exists
+      command: "id {{ username }}"
+      register: user_exists
       ignore_errors: true
 
-    # Delete users
-    - name: Delete users starting with "user"
+    - name: Delete user if it exists
       user:
-        name: "{{ item.split(':')[0] }}"
+        name: "{{ username }}"
         state: absent
-      loop: "{{ users_to_delete.stdout_lines }}"
-      when: users_to_delete is succeeded
+      when: user_exists.rc == 0
 
-    # Delete the password file
     - name: Delete the password file
       file:
         path: "{{ pwd_file }}"
