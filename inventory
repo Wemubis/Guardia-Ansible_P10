@@ -1,8 +1,17 @@
 [linux]
-192.168.56.109
-
-[linux:vars]
-pwd_file="password.txt"
+ip_lclient ansible_host=192.168.56.109
 
 [windows]
 
+[all:vars]
+centreon_api_url="http://http://192.168.56.111/centreon"
+centreon_username="admin"
+centreon_password='Password123*'
+
+[linux:vars]
+pwd_file="password.txt"
+username="BobTheBuilder"
+lhost_name="linux_client"
+lhost_alias="My linux_client"
+lhost_template="generic-active-host-Linux-SNMP-custom"
+lsnmp_community="clienLinux"
