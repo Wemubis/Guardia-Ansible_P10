@@ -19,17 +19,12 @@
         state: present
         update_password: always
 
-    - name: Check if password file exists
-      stat:
-        path: "{{ pwd_file }}"
-      register: pwd_file_stat
-
     - name: Create password file if it doesn't exist
       file:
         path: "{{ pwd_file }}"
         state: touch
         mode: '0644'
-      when: user_exists.rc == 0 and not pwd_file_stat.stat.exists
+      when: user_exists.rc != 0
 
     - name: Save username and password to password file
       blockinfile:
