@@ -1,0 +1,42 @@
+---
+- name: Manage users on Linux and Windows
+  hosts: linux:windows
+  gather_facts: no
+
+  tasks:
+    - name: Check if the vault file exists
+      ansible.builtin.stat:
+        path: "{{ secret_file }}"
+      delegate_to: localhost
+      register: vault_file
+
+    - name: Generate a random password
+      set_fact:
+        random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
+
+    - name: Create or update Linux user
+      when: inventory_hostname in groups['linux']
+      ansible.builtin.user:
+        name: "{{ l_username }}"
+        password: "{{ random_password | password_hash('sha512') }}"
+        state: present
+        update_password: always
+
+    - name: Create or update Windows user
+      when: inventory_hostname in groups['windows']
+      win_user:
+        name: "{{ w_username }}"
+        password: "{{ random_password | password_hash('sha512') }}"
+        state: present
+        update_password: always
+
+    - name: Create or update secrets.yml file
+      ansible.builtin.template:
+        src: "/root/secrets.yml.j2"
+        dest: "{{ secret_file }}"
+      delegate_to: localhost
+
+    - name: Load vaulted variables
+      ansible.builtin.include_vars:
+        file: "{{ secret_file }}"
+      delegate_to: localhost
