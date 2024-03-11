@@ -9,8 +9,8 @@ ip_lclient ansible_host=192.168.56.109 ip_lclient="192.168.56.109"
 [all:vars]
 secret_file="/root/secrets.yml"
 pwd_file="/root/password.txt"
-l_username="BobTheBuilder"
-w_username="MarioBros"
+l_username="BobTheBuildeur"
+w_username="MarioBrosse"
 centreon_api_url="http://192.168.56.111/centreon"
 centreon_username="admin"
 centreon_password='Password123*'
