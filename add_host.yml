@@ -1,0 +1,11 @@
+---
+- name: Add Linux host to Centreon using CLAPI
+  hosts: centreon_server
+  tasks:
+    - name: Authenticate with Centreon API
+      shell: 'centreon -u {{ centreon_api_user }} -p {{ centreon_api_password }} -o HOST -a add -v "Linux_Host;Linux_Host_Alias;{{ linux_host_ip }};Linux_Servers;generic-host"'
+      register: add_host_result
+      become: true
+
+    - debug:
+        msg: "{{ add_host_result.stdout }}"
