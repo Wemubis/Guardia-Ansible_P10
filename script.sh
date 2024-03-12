@@ -8,7 +8,7 @@ PLAYBOOKS_DIR="/root/playbooks"
 
 # Lists of playbooks to install and uninstall for Linux and Windows
 I_FILES=("snmp.yml" "usr.yml" "loop_centreon.yml")
-R_FILES=("del_snmp.yml" "del_usr.yml")
+R_FILES=("del_snmp.yml" "del_usr.yml" "del_loop_centreon.yml")
 
 # Function to check the existence of playbooks
 check_playbooks_existence() {
