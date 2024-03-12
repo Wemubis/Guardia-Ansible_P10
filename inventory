@@ -10,6 +10,7 @@
 [all:vars]
 ip_central="192.168.1.2"
 ip_lclient="192.168.1.4"
+ip_wclient="192.168.1.5"
 
 snmp_community="public"
 snmp_version="2c"
@@ -27,7 +28,9 @@ centreon_username="admin"
 centreon_password='Password123*'
 
 lhost_name="linux_client"
-lhost_template="generic-active-host-Linux-SNMP-custom"
+ltemplate="OS-Linux-SNMP-Custom"
+whost_name="windows_client"
+wtemplate="OS-Windows-SNMP-Custom"
 
 [windows:vars]
 ansible_connection=winrm
