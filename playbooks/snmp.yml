@@ -34,3 +34,24 @@
       service:
         name: snmpd
         state: restarted
+
+---
+- name: Installer et configurer SNMP sur une machine Windows
+  hosts: windows
+  gather_facts: no
+  
+  tasks:
+    - name: Installer SNMP Feature
+      win_feature:
+        name: SNMP-Service
+        state: present
+
+    - name: Copier le fichier de configuration SNMP
+      win_template:
+        src: w_snmpd.conf.j2
+        dest: C:\Windows\System32\snmp\snmpd.conf
+
+    - name: Redémarrer le service SNMP
+      win_service:
+        name: snmp
+        state: restarted
