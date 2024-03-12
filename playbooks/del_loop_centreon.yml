@@ -1,0 +1,10 @@
+---
+- name: Delete host in Centreon using CLAPI
+  hosts: central
+
+  tasks:
+    - name: Del monitored hosts
+      include_tasks: del_centreon.yml
+      loop:
+      - { hostname: "{{ lhost_name }}" }
+      - { hostname: "{{ whost_name }}" }
