@@ -3,8 +3,8 @@
   hosts: central
 
   tasks:
-  - name: Check if host exists
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a show -v {{ lhost_name }}"
+    - name: Check if host exists
+      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a show -v '{{ lhost_name }}'"
       register: check_host_result
       ignore_errors: true
       
