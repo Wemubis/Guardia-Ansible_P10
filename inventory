@@ -3,6 +3,7 @@
 
 [windows]
 
+
 [central]
 192.168.1.2
 
@@ -19,7 +20,15 @@ centreon_api_url="http://192.168.1.2/centreon"
 centreon_username="admin"
 centreon_password='Password123*'
 
-# [linux:vars]
+[linux:vars]
 lhost_name="linux_client"
 lhost_template="generic-active-host-Linux-SNMP-custom"
 lsnmp_community="public"
+
+[windows:vars]
+ansible_connection=winrm 
+ansible_user=Administrateur 
+ansible_password=Admin1234
+ansible_winrm_transport=basic
+ansible_port=5985
+ansible_winrm_server_cert_validation=ignore
