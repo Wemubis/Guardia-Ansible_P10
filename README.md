@@ -45,7 +45,9 @@ ssh-keygen -t rsa
 vim /etc/ssh/sshd_config
 ```
 > PermitRootLogin yes
+> 
 > PubkeyAuthentication yes
+> 
 > PasswordAuthentication yes
 
 - Restarting the SSH service:
