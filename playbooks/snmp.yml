@@ -35,14 +35,14 @@
         name: snmpd
         state: restarted
 
-- name: Installer et configurer SNMP sur une machine Windows
+- name: Install and configure SNMP on a Windows machine
   hosts: windows
   gather_facts: no
 
   tasks:
-    - name: Check if SNMP exist
+    - name: Check if SNMP exists
       win_reg_stat:
-        path: HKLM:\SYSTEM\CurrentConstrolSet\Services\SNMP
+        path: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP
       register: snmp_reg_stat
 
     - name: Install SNMP
@@ -54,6 +54,7 @@
     - name: Install SNMP Feature
       ansible.windows.win_powershell:
         script: "Install-WindowsFeature rsat-snmp"
+      when: not snmp_reg_stat.exists
 
     - name: Configure SNMP
       win_snmp:
@@ -62,8 +63,10 @@
         permitted_managers:
           - 192.168.1.2
         action: set
+      when: not snmp_reg_stat.exists
 
-    - name: Restart service SNMP
+    - name: Restart SNMP service
       win_service:
         name: snmp
         state: restarted
+      when: not snmp_reg_stat.exists
