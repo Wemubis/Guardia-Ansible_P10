@@ -1,0 +1,14 @@
+---
+- name: Install SNMP and configure community on Windows
+  hosts: windows
+  tasks:
+    - name: Install SNMP feature
+      win_feature:
+        name: SNMP-Service
+        state: present
+
+    - name: Set SNMP community string
+      win_command: reg add HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters\RFC1156Agent /v AgentPermitSetName /t REG_SZ /d "public" /f
+
+    - name: Set SNMP version to 2c
+      win_command: reg add HKLM\SYSTEM\CurrentControlSet\Services\SNMP\Parameters /v AcceptSNMPTRAP /t REG_DWORD /d 4 /f
