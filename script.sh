@@ -7,7 +7,7 @@ INVENTORY="inventory"
 PLAYBOOKS_DIR="/root/playbooks"
 
 # Lists of playbooks to install and uninstall for Linux and Windows
-I_FILES=("snmp.yml" "usr.yml")
+I_FILES=("snmp.yml" "usr.yml" "loop_centreon.yml")
 R_FILES=("del_snmp.yml" "del_usr.yml")
 
 # Function to check the existence of playbooks
