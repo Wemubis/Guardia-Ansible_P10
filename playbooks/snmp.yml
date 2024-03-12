@@ -19,7 +19,7 @@
 
     - name: Generate SNMPd configuration file
       template:
-        src: snmpd.conf.j2
+        src: l_snmpd.conf.j2
         dest: /etc/snmp/snmpd.conf
       notify: Restart SNMP service
 
@@ -35,23 +35,35 @@
         name: snmpd
         state: restarted
 
----
 - name: Installer et configurer SNMP sur une machine Windows
   hosts: windows
   gather_facts: no
-  
+
   tasks:
-    - name: Installer SNMP Feature
+    - name: Check if SNMP exist
+      win_reg_stat:
+        path: HKLM:\SYSTEM\CurrentConstrolSet\Services\SNMP
+      register: snmp_reg_stat
+
+    - name: Install SNMP
       win_feature:
         name: SNMP-Service
         state: present
+      when: not snmp_reg_stat.exists
 
-    - name: Copier le fichier de configuration SNMP
-      win_template:
-        src: w_snmpd.conf.j2
-        dest: C:\Windows\System32\snmp\snmpd.conf
+    - name: Install SNMP Feature
+      ansible.windows.win_powershell:
+        script: "Install-WindowsFeature rsat-snmp"
 
-    - name: Redémarrer le service SNMP
+    - name: Configure SNMP
+      win_snmp:
+        community_strings:
+          - public
+        permitted_managers:
+          - 192.168.1.2
+        action: set
+
+    - name: Restart service SNMP
       win_service:
         name: snmp
         state: restarted
