@@ -1,14 +1,11 @@
 [linux]
 192.168.1.4
 
-
 [windows]
 192.168.1.5
 
-
 [central]
 192.168.1.2
-
 
 [all:vars]
 ip_central="192.168.1.2"
@@ -31,7 +28,6 @@ centreon_password='Password123*'
 
 lhost_name="linux_client"
 lhost_template="generic-active-host-Linux-SNMP-custom"
-
 
 [windows:vars]
 ansible_connection=winrm
