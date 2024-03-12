@@ -53,7 +53,7 @@
       when: not snmp_reg_stat.exists
 
     - name: Install SNMP Feature
-      ansible.windows.win_powershell:
+      win_powershell:
         script: "Install-WindowsFeature rsat-snmp"
       when: not snmp_reg_stat.exists
 
