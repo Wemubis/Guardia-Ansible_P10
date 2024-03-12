@@ -5,7 +5,7 @@
 
   tasks:
     - name: Check if the vault file exists
-      ansible.builtin.stat:
+      stat:
         path: "{{ secret_file }}"
       delegate_to: localhost
       register: vault_file
@@ -16,7 +16,7 @@
 
     - name: Create or update Linux user
       when: inventory_hostname in groups['linux']
-      ansible.builtin.user:
+      user:
         name: "{{ l_username }}"
         password: "{{ random_password | password_hash('sha512') }}"
         state: present
@@ -31,12 +31,12 @@
         update_password: always
 
     - name: Create or update secrets.yml file
-      ansible.builtin.template:
+      template:
         src: "{{ pattern_secret }}"
         dest: "{{ secret_file }}"
       delegate_to: localhost
 
     - name: Load vaulted variables
-      ansible.builtin.include_vars:
+      include_vars:
         file: "{{ secret_file }}"
       delegate_to: localhost
