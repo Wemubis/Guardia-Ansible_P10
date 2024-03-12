@@ -1,18 +1,32 @@
 ---
 - name: Delete user and password file
-  hosts: linux
+  hosts: linux:windows
 
   tasks:
-    - name: Check if the user exists
+    - name: Check if the linux user exists
+      when: inventory_hostname in groups['linux']
       command: "id {{ l_username }}"
       register: user_exists
       ignore_errors: true
 
-    - name: Delete user if it exists
+    - name: Delete linux user if it exists
+      when: inventory_hostname in groups['linux'] and user_exists.rc == 0
       user:
         name: "{{ l_username }}"
         state: absent
-      when: user_exists.rc == 0
+
+    - name: Check if the windows user exists
+      when: inventory_hostname in groups['windows']
+      ansible.windows.win_powershell:
+        script: "Get-LocalUser -Name {{ w_username }}"
+      register: user_exist
+      ignore_errors: true
+
+    - name: Delete windows user if it exists
+      when: inventory_hostname in groups['windows'] and '"Name" in user_exist.stdout'
+      win_user:
+        name: "{{ w_username }}"
+        state: absent
 
     - name: Create or update secrets.yml file
       ansible.builtin.template:
