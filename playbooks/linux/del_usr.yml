@@ -16,6 +16,6 @@
 
     - name: Create or update secrets.yml file
       ansible.builtin.template:
-        src: "/root/empty_secrets.yml.j2"
+        src: "{{ e_pattern_secret }}"
         dest: "{{ secret_file }}"
       delegate_to: localhost
