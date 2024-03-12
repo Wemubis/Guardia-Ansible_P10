@@ -22,6 +22,7 @@
         src: l_snmpd.conf.j2
         dest: /etc/snmp/snmpd.conf
       notify: Restart SNMP service
+      when: snmp_status.rc != 0
 
     - name: Start SNMP service
       service:
