@@ -1,22 +1,25 @@
 [linux]
-ip_lclient ansible_host=192.168.56.109 ip_lclient="192.168.56.109"
+192.168.1.4
 
 [windows]
 
 [central]
-192.168.56.111
+192.168.1.2
 
 [all:vars]
-secret_file="/root/secrets.yml"
-pwd_file="/root/password.txt"
+ip_central="192.168.1.2"
+ip_lclient="192.168.1.4"
+secret_file="/root/vault/secrets.yml"
+pwd_file="/root/vault/password.txt"
+pattern_secret="/root/vault/secrets.yml.j2"
+e_pattern_secret="/root/vault/e_secrets.yml.j2"
 l_username="BobTheBuildeur"
 w_username="MarioBrosse"
-centreon_api_url="http://192.168.56.111/centreon"
+centreon_api_url="http://192.168.1.2/centreon"
 centreon_username="admin"
 centreon_password='Password123*'
 
 # [linux:vars]
 lhost_name="linux_client"
-lhost_alias="My linux_client"
 lhost_template="generic-active-host-Linux-SNMP-custom"
-lsnmp_community="clienLinux"
+lsnmp_community="public"
