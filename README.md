@@ -73,6 +73,6 @@ Manual configuration of the machine:
 
 Configuration of WinRM:
 
-
+<br><br>
 
 ## Configuration des playbooks
