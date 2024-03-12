@@ -1,30 +1,26 @@
 ---
-- name: Add Linux host to Centreon using CLAPI
-  hosts: central
+- name: Check if host exists
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a getparam -v '{{ item.hostname }};snmp_version'"
+  register: check_host_result
+  ignore_errors: true
 
-  tasks:
-    - name: Check if host exists
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a show -v '{{ lhost_name }}'"
-      register: check_host_result
-      ignore_errors: true
-      
-    - name: Authenticate with Centreon API
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a add -v '{{ lhost_name }};{{ lhost_name }};{{ ip_lclient }};OS-Linux-SNMP-Custom;central;'"
-      register: add_host_result
-      when: check_host_result.rc != 0
+- name: Authenticate with Centreon API
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a add -v '{{ item.hostname }};{{ item.hostname }};{{ item.ip }};{{ item.template }};central;'"
+  register: add_host_result
+  when: check_host_result.rc != 0
 
-    - name: Add SNMP community
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ lhost_name }};snmp_community;{{ snmp_community }}'"
-      when: check_host_result.rc != 0
+- name: Add SNMP community
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ item.hostname }};snmp_community;{{ snmp_community }}'"
+  when: check_host_result.rc != 0
 
-    - name: Add SNMP verion
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ lhost_name }};snmp_version;{{ snmp_version }}'"
-      when: check_host_result.rc != 0
+- name: Add SNMP verion
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ item.hostname }};snmp_version;{{ snmp_version }}'"
+  when: check_host_result.rc != 0
 
-    - name: Apply Template
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a applytpl -v {{ lhost_name }}"
-      when: check_host_result.rc != 0
+- name: Apply Template
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a applytpl -v {{ item.hostname }}"
+  when: check_host_result.rc != 0
 
-    - name: Export Configuration
-      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
-      when: check_host_result.rc != 0
+- name: Export Configuration
+  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
+  when: check_host_result.rc != 0
