@@ -1,0 +1,10 @@
+---
+- name: Add Linux host to Centreon using CLAPI
+  hosts: central
+
+  tasks:
+    - name: Add host to monitor
+      include_tasks: centreon.yml
+      loop:
+      - { hostname: "{{ lhost_name }}", template: "{{ ltemplate }}", ip: "{{ ip_lclient }}" }
+      - { hostname: "{{ whost_name }}", template: "{{ wtemplate }}", ip: "{{ ip_wclient }}" }
