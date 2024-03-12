@@ -34,3 +34,30 @@
         path: /etc/snmp/snmpd.conf
         state: absent
       when: snmp_status.rc == 0
+
+- name: Uninstall SNMP from a Windows machine
+  hosts: windows
+  gather_facts: no
+
+  tasks:
+    - name: Check if SNMP exists
+      win_reg_stat:
+        path: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP
+      register: snmp_reg_stat
+
+    - name: Stop SNMP service
+      win_service:
+        name: snmp
+        state: stopped
+      when: snmp_reg_stat.exists
+
+    - name: Uninstall SNMP
+      win_feature:
+        name: SNMP-Service
+        state: absent
+      when: snmp_reg_stat.exists
+
+    - name: Uninstall SNMP Feature
+      ansible.windows.win_powershell:
+        script: "Uninstall-WindowsFeature rsat-snmp"
+      when: snmp_reg_stat.exists
