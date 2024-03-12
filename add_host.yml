@@ -3,7 +3,7 @@
   hosts: central
 
   tasks:
-        - name: Authenticate with Centreon API
+    - name: Authenticate with Centreon API
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a add -v '{{ lhost_name }};{{ lhost_name }};{{ ip_lclient }};OS-Linux-SNMP-Custom;central;'"
       register: add_host_result
       become: true
@@ -13,3 +13,9 @@
 
     - name: Add SNMP verion
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ lhost_name }};snmp_version;{{ snmp_version }}'"
+
+  - name: Apply Template
+      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a applytpl -v {{ lhost_name }}"
+
+  - name: Export Configuration
+      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
