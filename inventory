@@ -10,6 +10,8 @@
 [all:vars]
 ip_central="192.168.1.2"
 ip_lclient="192.168.1.4"
+snmp_community: "public"
+snmp_version: "2c"
 secret_file="/root/vault/secrets.yml"
 pwd_file="/root/vault/password.txt"
 pattern_secret="/root/vault/secrets.yml.j2"
@@ -23,7 +25,6 @@ centreon_password='Password123*'
 [linux:vars]
 lhost_name="linux_client"
 lhost_template="generic-active-host-Linux-SNMP-custom"
-lsnmp_community="public"
 
 [windows:vars]
 ansible_connection=winrm 
