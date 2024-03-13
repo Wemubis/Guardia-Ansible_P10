@@ -130,6 +130,7 @@ Assigning these variables allows for simplification when modifying the code sinc
 
 #### SNMP
 Before installing and configuring the SNMP service, I check if it already exists.
+
 Linux:
 ```yaml
 - name: Check if SNMP is installed
