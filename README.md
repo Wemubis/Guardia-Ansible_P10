@@ -216,6 +216,8 @@ Finally, this template is copied and then updated in the secret file with the va
   delegate_to: localhost
 ```
 
+<br>
+
 #### CENTREON
 
 
