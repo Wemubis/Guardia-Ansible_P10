@@ -57,7 +57,7 @@ systemctl restart sshd
 
 - Saving the public key in the client's known_hosts file:
 ```bash
-ssh-copy-id -i /path/.ssh/id_rsa.pub root@<ip_client>
+ssh-copy-id -i /root/.ssh/id_rsa.pub root@<ip_client>
 ```
 
 - Disabling the firewall on the client:
