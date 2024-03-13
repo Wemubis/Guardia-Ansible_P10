@@ -74,7 +74,8 @@ Manual configuration of the machine via the command prompt:
 sconfig
 ```
 
-- Then, follow the steps displayed on your terminal: ![[Pasted image 20240313115326.png|300]]
+Then, follow the steps displayed on your terminal:
+![[Pasted image 20240313115326.png|300]]
 
 Manually configure the firewall with PowerShell:
 ```bash
