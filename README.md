@@ -140,7 +140,7 @@ Simple Network Management Protocol (SNMP) is essential for network management. I
 - **For Windows:**
   Use Windows Registry to verify the presence of SNMP configurations.
 
-After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [SNMP playbook documentation](playbooks/snmp.yml).
+After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [SNMP playbook](playbooks/snmp.yml).
 
 <br>
 
