@@ -117,9 +117,6 @@ In my [inventory](inventory), I've defined groups for hosts:
 
 [windows]
 192.168.1.5
-
-[central]
-192.168.1.2
 ```
 
 I've done the same for global variables or those assigned to a specific host group:
@@ -128,13 +125,6 @@ I've done the same for global variables or those assigned to a specific host gro
 snmp_community="public"
 snmp_version="2c"
 l_username="BobTheBuilder"
-lhost_name="linux_client"
-ltemplate="OS-Linux-SNMP-Custom"
-...
-
-[windows:vars]
-ansible_connection=winrm
-ansible_user=Administrator
 ...
 ```
 
