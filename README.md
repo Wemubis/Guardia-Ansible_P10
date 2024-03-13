@@ -13,7 +13,7 @@ All machines are on an internal network: "intra". And the OPNSense machine is al
 
 <br>
 
-## OPNSense Machines
+### OPNSense Machines
 Configuration of interfaces on OPNsense:
 - em0: WAN
 - em1: LAN
