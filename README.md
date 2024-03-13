@@ -25,7 +25,7 @@ pfctl -d
 
 <br>
 
-#### Almalinux Machines
+### Almalinux Machines
 1) Manual configuration of machines:
 ```bash
 nmcli con mod enp0s3 IPv4.method manual
@@ -68,7 +68,7 @@ systemctl stop firewalld
 
 <br>
 
-#### Client Machine (Windows)
+### Client Machine (Windows)
 Manual configuration of the machine via the command prompt:
 ```bash
 sconfig
@@ -89,9 +89,9 @@ Use these repositories to install and configure it:
 
 <br><br>
 
-## Playbooks Configuration
+# Playbooks Configuration
 
-#### INVENTORY
+## INVENTORY
 
 In my [inventory](inventory), I've defined groups for hosts:
 ```bash
@@ -128,7 +128,7 @@ Assigning these variables allows for simplification when modifying the code sinc
 
 <br>
 
-#### SNMP
+## SNMP
 Before installing and configuring the SNMP service, I check if it already exists.
 
 Linux:
@@ -153,7 +153,7 @@ I also wrote a playbook for uninstalling the service as required by the project:
 
 <br>
 
-#### USERS
+## USERS
 For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [VAULT](#vault) (next section).
 
 First, I generate a random 12-character alphanumeric password:
@@ -176,7 +176,7 @@ Here is the playbook for the deletion of the user : [del_usr.yml](playbooks/del_
 
 <br>
 
-#### VAULT
+## VAULT
 
 For the vault, I've created a bash script to handle its creation, encryption, and decryption based on the argument added: [vault.sh](create_vault.sh)
 
@@ -218,10 +218,10 @@ Finally, this template is copied and then updated in the secret file with the va
 
 <br>
 
-#### CENTREON
+## CENTREON
 
 
 <br><br>
 
-## Script to Launch Files
+# Script to Launch Files
 
