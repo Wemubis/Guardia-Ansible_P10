@@ -23,7 +23,7 @@
 <br><br>
 
 ## Introduction
-This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense and the automation process with ansible playbooks.
+This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense for firewall and DNS functionalities.
 
 <br><br>
 
@@ -110,7 +110,7 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 
 ## INVENTORY
 
-In my [inventory](inventory), I've defined groups for hosts:
+In my [`inventory`](inventory), I've defined groups for hosts:
 ```bash
 [linux]
 192.168.1.4
@@ -124,7 +124,6 @@ I've done the same for global variables or those assigned to a specific host gro
 [all:vars]
 snmp_community="public"
 snmp_version="2c"
-l_username="BobTheBuilder"
 ...
 ```
 
@@ -140,7 +139,7 @@ Simple Network Management Protocol (SNMP) is essential for network management. I
 - **For Windows:**
   Use Windows Registry to verify the presence of SNMP configurations.
 
-After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [SNMP playbook](playbooks/snmp.yml).
+After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [`SNMP playbook`](playbooks/snmp.yml).
 
 <br>
 
@@ -152,7 +151,7 @@ By automating user creation and password management, we maintain consistency and
 
 This automation ensures that user accounts on both Linux and Windows systems are consistently managed, improving security and auditability.
 
-For more details, see the user management playbook: [User Playbook](playbooks/usr.yml).
+For more details, see the user management playbook: [`User Playbook`](playbooks/usr.yml).
 
 <br>
 
@@ -168,7 +167,7 @@ More information on Ansible Vault can be found in the [Ansible documentation](ht
 ### Centreon
 Centreon is a comprehensive IT monitoring solution that enables you to monitor your entire IT infrastructure from a single platform. The centreon script ([`install_centreon.sh`](install_centreon.sh)) install centreon on the machine.
 
-The Centreon playbooks ([`loop_centreon.yml`](playbooks/loop_centreon.yml) and [centreon.yml](playbooks/centreon.yml)) automate tasks such as:
+The Centreon playbooks ([`loop_centreon.yml`](playbooks/loop_centreon.yml) and [`centreon.yml`](playbooks/centreon.yml)) automate tasks such as:
 - Checking if machines are already present in Centreon.
 - Adding new machines with their SNMP configurations.
 - Applying monitoring templates and exporting configurations.
