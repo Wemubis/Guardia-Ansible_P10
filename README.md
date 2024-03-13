@@ -1,66 +1,85 @@
-# Machine Configuration
+# Project Documentation
 
-The machines are installed on VirtualBox. There are 5 machines: 3 Almalinux, one Windows Server, and one OPNsense (serves as a firewall and DNS).
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Machine Configuration](#machine-configuration)
+   - [Machine Addressing Plan](#machine-addressing-plan)
+   - [OPNSense Configuration](#opnsense-configuration)
+   - [AlmaLinux Configuration](#almalinux-configuration)
+   - [Windows Client Configuration](#windows-client-configuration)
+3. [Playbook Configuration](#playbook-configuration)
+   - [Inventory](#inventory)
+   - [SNMP](#snmp)
+   - [Users](#users)
+   - [Vault](#vault)
+   - [Centreon](#centreon)
+4. [Script for Launching Playbooks](#script-for-launching-playbooks)
+   - [Overview](#overview)
+   - [Features](#features)
+   - [Requirements](#requirements)
+   - [Usage](#usage)
+   - [Error Handling](#error-handling)
 
-<u>Machine Addressing Plan</u>:
-- OPNSense: 192.168.1.1
-- Centreon: 192.168.1.2
-- Ansible: 192.168.1.3
-- Client (Linux): 192.168.1.4
-- Client (Windows): 192.168.1.5
+<br><br>
 
-All machines are on an internal network: "intra". And the OPNSense machine is also in NAT.
+## Introduction
+This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense for firewall and DNS functionalities.
+
+<br><br>
+
+## Machine Configuration
+
+### Machine Addressing Plan
+The network setup consists of five machines interconnected via an "intra" internal network, with OPNSense also set up in NAT mode.
+
+- **OPNSense:** `192.168.1.1`
+- **Centreon:** `192.168.1.2`
+- **Ansible:** `192.168.1.3`
+- **Client (Linux):** `192.168.1.4`
+- **Client (Windows):** `192.168.1.5`
 
 <br>
 
-### OPNSense Machines
-Configuration of interfaces on OPNsense:
-- em0: WAN
-- em1: LAN
+### OPNSense Configuration
+Configure the OPNSense machine interfaces:
+- **WAN (em0)**
+- **LAN (em1)**
 
-Disabling firewall rules (OPTION 8):
+Disable the firewall with:
 ```bash
 pfctl -d
 ```
 
 <br>
 
-### Almalinux Machines
-1) Manual configuration of machines:
+### AlmaLinux Configuration
+
+1. **Manual Machine Configuration:**
 ```bash
 nmcli con mod enp0s3 IPv4.method manual
 nmcli con mod enp0s3 IPv4.address <IP_host>
 nmcli con mod enp0s3 IPv4.gateway <IP_gateway>/<mask>
 nmcli con mod enp0s3 IPv4.dns <IP_dns>
-```
+````
 
-2) SSH configuration:
-- Generating SSH key:
+-  **SSH Configuration:**
+- Generate SSH key:
 ```bash
 ssh-keygen -t rsa
 ```
 
-- Uncomment lines in the sshd_config file to allow SSH communication with the root user:
+- Enable root SSH access and restart the SSH service:
 ```bash
-vim /etc/ssh/sshd_config
-```
-> PermitRootLogin yes
-> 
-> PubkeyAuthentication yes
-> 
-> PasswordAuthentication yes
-
-- Restarting the SSH service:
-```bash
+vim /etc/ssh/sshd_config # Uncomment and set: PermitRootLogin yes, PubkeyAuthentication yes, PasswordAuthentication yes
 systemctl restart sshd
 ```
 
-- Saving the public key in the client's known_hosts file:
+- Copy the public key to the client's `known_hosts`:
 ```bash
 ssh-copy-id -i /root/.ssh/id_rsa.pub root@<ip_client>
 ```
 
-- Disabling the firewall on the client:
+- Disable the firewall on the client:
 ```bash
 systemctl disable firewalld
 systemctl stop firewalld
@@ -69,22 +88,20 @@ systemctl stop firewalld
 <br>
 
 ### Client Machine (Windows)
-Manual configuration of the machine via the command prompt:
+
+- **Manual Configuration via Command Prompt:**
 ```bash
 sconfig
 ```
 
-Then, follow the steps displayed on your terminal:
-![[Pasted image 20240313115326.png|300]]
+Then follow the prompts in your terminal.
 
-Manually configure the firewall with PowerShell:
+- **Firewall Configuration with PowerShell:**
 ```bash
 Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 ```
 
-<br>
-Configuration of WinRM:
-Use these repositories to install and configure it:
+- **WinRM Configuration:**
 [TODO]
 
 <br><br>
@@ -125,117 +142,73 @@ Assigning these variables allows for simplification when modifying the code sinc
 
 <br>
 
-## SNMP
-Before installing and configuring the SNMP service, I check if it already exists.
+### SNMP
+Simple Network Management Protocol (SNMP) is essential for network management. It allows for the collection of detailed data from network devices. Before attempting to install or configure SNMP on a target machine, it's crucial to verify whether it's already installed:
 
-Linux:
-```yaml
-- name: Check if SNMP is installed
-  shell: "rpm -q net-snmp"
-  register: snmp_status
-  ignore_errors: true
-```
-Windows:
-```yaml
-- name: Check if SNMP exists
-  win_reg_stat:
-    path: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP
-  register: snmp_reg_stat
-```
+- **For Linux:**
+  Check the installation status of SNMP using the package management system.
+- **For Windows:**
+  Use Windows Registry to verify the presence of SNMP configurations.
 
-Then I install the service and its dependencies on the corresponding machines and modify the configuration file if necessary.
-> See [snmp.yml](playbooks/snmp.yml).
-
-I also wrote a playbook for uninstalling the service as required by the project: [del_snmp.yml](playbooks/del_snmp.yml).
+After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [SNMP playbook documentation](playbooks/snmp.yml).
 
 <br>
 
-## USERS
-For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [VAULT](#vault) (next section).
+### Users
+By automating user creation and password management, we maintain consistency and security across our network. The playbooks handle:
+- Generating secure passwords.
+- Creating users with these passwords.
+- Optionally, updating passwords for existing users.
 
-First, I generate a random 12-character alphanumeric password:
-```yaml
-- name: Generate a random password
-  set_fact:
-    random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
-```
+This automation ensures that user accounts on both Linux and Windows systems are consistently managed, improving security and auditability.
 
-Then, I add the user if it's not already created on the machine or simply update their password with these properties:
-```yaml
-user: # win_user: for windows
-  name: "{{ l_username }}"
-  password: "{{ random_password | password_hash('sha512') }}"
-  state: present
-  update_password: always
-```
-
-Here is the playbook for the deletion of the user : [del_usr.yml](playbooks/del_usr.yml)
+For more details, see the user management playbook: [User Playbook](playbooks/usr.yml).
 
 <br>
 
-## VAULT
+### Vault
+Ansible Vault is a feature that allows users to keep sensitive data such as passwords or keys in encrypted files, rather than as plaintext in playbooks or roles.
 
-For the vault, I've created a bash script to handle its creation, encryption, and decryption based on the argument added: [vault.sh](create_vault.sh)
+The vault script ([`create_vault.sh`](create_vault.sh)) simplifies working with Ansible Vault by automating the creation, encryption, and decryption of vault files based on the user's input.
 
-The creation, encryption, and decryption processes require a file with the password located here: [password.txt](vault/password.txt).
-
-```bash
-ansible-vault create /path/vault_file.yml --vault-password-file=/path/password.txt
-```
-
-For the other steps concerning the encryption or decryption of the vault, the commands are within the script.
-
-Then, to add passwords and usernames into the vault, I used Jinja2 templates (.j2, a template engine written for Python).
-
-```Jinja2
-# secrets.yml
-users:
-  Linux:
-    Username: "{{ l_username }}"
-    Password: "{{ random_password }}"
-  Windows:
-    Username: "{{ w_username }}"
-    Password: "{{ random_password }}"
-```
-
-Finally, this template is copied and then updated in the secret file with the variable values:
-
-```yaml
-- name: Create or update secrets.yml file
-  template:
-    src: "{{ pattern_secret }}"
-    dest: "{{ secret_file }}"
-  delegate_to: localhost
-
-- name: Load vaulted variables
-  include_vars:
-    file: "{{ secret_file }}"
-  delegate_to: localhost
-```
+More information on Ansible Vault can be found in the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
 
 <br>
 
-## CENTREON
+### Centreon
+Centreon is a comprehensive IT monitoring solution that enables you to monitor your entire IT infrastructure from a single platform. The centreon script ([`install_centreon.sh`](install_centreon.sh)) install centreon on the machine.
 
-Installation of Centreon is facilitated through a script I created, following the Centreon documentation: [central.sh](install_centreon.sh).
+The Centreon playbooks ([`loop_centreon.yml`](playbooks/loop_centreon.yml) and [centreon.yml](playbooks/centreon.yml)) automate tasks such as:
+- Checking if machines are already present in Centreon.
+- Adding new machines with their SNMP configurations.
+- Applying monitoring templates and exporting configurations.
 
-[TODO ON CENTREON MACHINE]
-
-For adding machines, I first check if the machines are present:
-
-```bash
-centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a getparam -v '{{ item.hostname }};snmp_version'
-```
-
-Next, I add them with their SNMP version and community. Finally, I apply the templates and export the configurations:
-- [loop_centreon.yml](playbooks/loop_centreon.yml)
-- [centreon.yml](playbooks/centreon.yml)
-
-Here is the playbook for the deletion of the hosts on Centreon:
-- [del_loop_centreon.yml](playbooks/del_loop_centreon.yml)
-- [del_centreon.yml](playbooks/del_centreon.yml)
+These playbooks facilitate the rapid deployment and management of our monitoring infrastructure, ensuring that new or updated hosts are quickly integrated into your monitoring setup. For an introduction to Centreon and instructions on manual setup, visit the [Centreon documentation](https://docs.centreon.com/current/en/).
 
 <br><br>
 
 # Script to Launch Files
 
+## Overview
+This Bash script automates the execution of Ansible playbooks for installing or removing system configurations. It simplifies the management of Ansible playbooks.
+
+<br>
+
+## Features
+- **Install Configurations:** Easily install configurations on systems using predefined Ansible playbooks.
+- **Remove Configurations:** Safely remove installed configurations using corresponding Ansible playbooks.
+
+<br>
+
+## Requirements
+- **Ansible:** Ensure Ansible is installed and properly configured on the system where the script will be run.
+- **Inventory and Playbooks:** An inventory file and playbook files must be correctly set up and accessible to the script.
+
+<br>
+
+## Usage
+To use the script, you have the following options:
+- **Install Configurations:** `./script.sh -i` or `./script.sh --install`
+- **Remove Configurations:** `./script.sh -r` or `./script.sh --remove`
+
+Ensure you run the script from the directory where it's located, or provide the full path to the script.
