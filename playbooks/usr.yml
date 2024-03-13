@@ -4,12 +4,6 @@
   gather_facts: no
 
   tasks:
-    - name: Check if the vault file exists
-      stat:
-        path: "{{ secret_file }}"
-      delegate_to: localhost
-      register: vault_file
-
     - name: Generate a random password
       set_fact:
         random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
