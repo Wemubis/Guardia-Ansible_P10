@@ -154,7 +154,7 @@ I also wrote a playbook for uninstalling the service as required by the project:
 <br>
 
 #### USERS
-For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [VAULT](#VAULT) (next section).
+For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [VAULT](#vault) (next section).
 
 First, I generate a random 12-character alphanumeric password:
 ```yaml
