@@ -220,6 +220,23 @@ Finally, this template is copied and then updated in the secret file with the va
 
 ## CENTREON
 
+Installation of Centreon is facilitated through a script I created, following the Centreon documentation: [central.sh](install_centreon.sh).
+
+[TODO ON CENTREON MACHINE]
+
+For adding machines, I first check if the machines are present:
+
+```bash
+centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a getparam -v '{{ item.hostname }};snmp_version'
+```
+
+Next, I add them with their SNMP version and community. Finally, I apply the templates and export the configurations:
+- [loop_centreon.yml](playbooks/loop_centreon.yml)
+- [centreon.yml](playbooks/centreon.yml)
+
+Here is the playbook for the deletion of the hosts on Centreon:
+- [del_loop_centreon.yml](playbooks/del_loop_centreon.yml)
+- [del_centreon.yml](playbooks/del_centreon.yml)
 
 <br><br>
 
