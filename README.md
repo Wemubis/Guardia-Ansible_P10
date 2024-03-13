@@ -23,7 +23,7 @@
 <br><br>
 
 ## Introduction
-This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense for firewall and DNS functionalities.
+This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense and the automation process with ansible playbooks.
 
 <br><br>
 
