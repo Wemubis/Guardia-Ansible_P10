@@ -154,7 +154,7 @@ I also wrote a playbook for uninstalling the service as required by the project:
 <br>
 
 #### USERS
-For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [VAULT](#vault) (next section).
+For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [[README#VAULT|vault]] (next section).
 
 First, I generate a random 12-character alphanumeric password:
 ```yaml
@@ -172,6 +172,54 @@ user: # win_user: for windows
   update_password: always
 ```
 
+Here is the playbook for the deletion of the user : [del_usr.yml](playbooks/del_usr.yml)
+
 <br>
 
 #### VAULT
+
+For the vault, I've created a bash script to handle its creation, encryption, and decryption based on the argument added: [vault.sh](create_vault.sh)
+
+The creation, encryption, and decryption processes require a file with the password located here: [password.txt](vault/password.txt).
+
+```bash
+ansible-vault create /path/vault_file.yml --vault-password-file=/path/password.txt
+```
+
+For the other steps concerning the encryption or decryption of the vault, the commands are within the script.
+
+Then, to add passwords and usernames into the vault, I used Jinja2 templates (.j2, a template engine written for Python).
+
+```Jinja2
+# secrets.yml
+users:
+  Linux:
+    Username: "{{ l_username }}"
+    Password: "{{ random_password }}"
+  Windows:
+    Username: "{{ w_username }}"
+    Password: "{{ random_password }}"
+```
+
+Finally, this template is copied and then updated in the secret file with the variable values:
+
+```yaml
+- name: Create or update secrets.yml file
+  template:
+    src: "{{ pattern_secret }}"
+    dest: "{{ secret_file }}"
+  delegate_to: localhost
+
+- name: Load vaulted variables
+  include_vars:
+    file: "{{ secret_file }}"
+  delegate_to: localhost
+```
+
+#### CENTREON
+
+
+<br><br>
+
+## Script to Launch Files
+
