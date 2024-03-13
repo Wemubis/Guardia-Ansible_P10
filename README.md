@@ -113,13 +113,9 @@ I've done the same for global variables or those assigned to a specific host gro
 [all:vars]
 snmp_community="public"
 snmp_version="2c"
-
 l_username="BobTheBuilder"
-w_username="MarioBros" 
 lhost_name="linux_client"
 ltemplate="OS-Linux-SNMP-Custom"
-whost_name="windows_client"
-wtemplate="OS-Windows-SNMP-Custom"
 ...
 
 [windows:vars]
@@ -129,5 +125,50 @@ ansible_user=Administrator
 ```
 
 Assigning these variables allows for simplification when modifying the code since I only need to modify it once here.
+
+<br>
+
+#### SNMP
+Before installing and configuring the SNMP service, I check if it already exists.
+Linux:
+```yaml
+- name: Check if SNMP is installed
+  shell: "rpm -q net-snmp"
+  register: snmp_status
+  ignore_errors: true
+```
+Windows:
+```yaml
+- name: Check if SNMP exists
+  win_reg_stat:
+    path: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP
+  register: snmp_reg_stat
+```
+
+Then I install the service and its dependencies on the corresponding machines and modify the configuration file if necessary.
+> See [snmp.yml](playbooks/snmp.yml).
+
+I also wrote a playbook for uninstalling the service as required by the project: [del_snmp.yml](playbooks/del_snmp.yml).
+
+<br>
+
+#### USERS
+For this part, I've written a [playbook](playbooks/usr.yml) that creates a user on the target machine and assigns them a random password. Then, it saves the credentials in a [[README#VAULT|vault]] (next section).
+
+First, I generate a random 12-character alphanumeric password:
+```yaml
+- name: Generate a random password
+  set_fact:
+    random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
+```
+
+Then, I add the user if it's not already created on the machine or simply update their password with these properties:
+```yaml
+user: # win_user: for windows
+  name: "{{ l_username }}"
+  password: "{{ random_password | password_hash('sha512') }}"
+  state: present
+  update_password: always
+```
 
 <br>
