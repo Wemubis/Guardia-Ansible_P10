@@ -97,15 +97,12 @@ In my [inventory](inventory), I've defined groups for hosts:
 ```bash
 [linux]
 192.168.1.4
-...
 
 [windows]
 192.168.1.5
-...
 
 [central]
 192.168.1.2
-...
 ```
 
 I've done the same for global variables or those assigned to a specific host group:
