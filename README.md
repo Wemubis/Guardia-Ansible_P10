@@ -18,7 +18,6 @@
    - [Features](#features)
    - [Requirements](#requirements)
    - [Usage](#usage)
-   - [Error Handling](#error-handling)
 
 <br><br>
 
