@@ -69,10 +69,64 @@ systemctl stop firewalld
 <br>
 
 #### Client Machine (Windows)
-Manual configuration of the machine:
+Manual configuration of the machine via the command prompt:
+```bash
+sconfig
+```
 
+- Then, follow the steps displayed on your terminal: ![[Pasted image 20240313115326.png|300]]
+
+Manually configure the firewall with PowerShell:
+```bash
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+```
+
+<br>
 Configuration of WinRM:
+Use these repositories to install and configure it:
+[TODO]
 
 <br><br>
 
-## Configuration des playbooks
+## Playbooks Configuration
+
+#### INVENTORY
+
+In my [inventory](inventory), I've defined groups for hosts:
+```bash
+[linux]
+192.168.1.4
+...
+
+[windows]
+192.168.1.5
+...
+
+[central]
+192.168.1.2
+...
+```
+
+I've done the same for global variables or those assigned to a specific host group:
+```bash
+[all:vars]
+snmp_community="public"
+snmp_version="2c"
+
+l_username="BobTheBuilder"
+w_username="MarioBros" 
+lhost_name="linux_client"
+ltemplate="OS-Linux-SNMP-Custom"
+whost_name="windows_client"
+wtemplate="OS-Windows-SNMP-Custom"
+...
+
+[windows:vars]
+ansible_connection=winrm
+ansible_user=Administrator
+...
+```
+
+Assigning these variables allows for simplification when modifying the code since I only need to modify it once here.
+
+<br>
