@@ -56,6 +56,10 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
+if [ ! -f "/root/vault/secrets.csv" ]; then
+    bash /root/create_vault.sh -c
+fi
+
 # Execute appropriate playbooks based on provided argument
 case "$1" in
     -i | --install)
