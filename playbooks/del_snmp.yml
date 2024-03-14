@@ -5,7 +5,7 @@
 
   tasks:
     - name: Uninstall SNMP packages if installed
-      when: ansible_host in groups['linux']
+      when: ansible_name in groups['linux']
       dnf:
         name: "{{ item }}"
         state: absent
@@ -14,13 +14,13 @@
         - net-snmp-utils
 
     - name: Remove SNMP configuration file if exists
-      when: ansible_host in groups['linux']
+      when: ansible_name in groups['linux']
       file:
         path: /etc/snmp/snmpd.conf
         state: absent
 
     - name: Uninstall SNMP
-      when: ansible_host in groups['windows']
+      when: ansible_name in groups['windows']
       win_feature:
         name: "{{ item }}"
         state: absent
