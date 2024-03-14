@@ -11,7 +11,7 @@
     - name: Create or update Linux user
       when: ansible_host in groups['linux']
       user:
-        name: "{{ l_username }}"
+        name: "{{ username }}"
         password: "{{ random_password | password_hash('sha512') }}"
         state: present
         update_password: always
@@ -19,25 +19,21 @@
     - name: Create or update Windows user
       when: ansible_host in groups['windows']
       win_user:
-        name: "{{ w_username }}"
+        name: "{{ username }}"
         password: "{{ random_password | password_hash('sha512') }}"
         state: present
         update_password: always
 
+    - name: Decrypt vault file
+      command: "bash /root/create_vault.sh -d"
+
     - name: Create or update secrets.yml file
-      template:
-        src: "{{ pattern_secret }}"
+      delegate_to: localhost
+      lineinfile:
         dest: "{{ secret_file }}"
-      delegate_to: localhost
+        regexp: "^{{ ansible_name }};"
+        line: "{{ ansible_name }};{{ username }};{{ random_password }}"
+        state: present
 
-    - name: Load vaulted variables
-      include_vars:
-        file: "{{ secret_file }}"
-      delegate_to: localhost
-
-- name: Encrypt vault file
-  hosts: localhost
-
-  tasks:
     - name: Encrypt vault file
       command: "bash /root/create_vault.sh -e"
