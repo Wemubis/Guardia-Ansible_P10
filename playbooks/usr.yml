@@ -34,3 +34,7 @@
       include_vars:
         file: "{{ secret_file }}"
       delegate_to: localhost
+      
+    - name: Load vaulted variables
+      command: "bash create_vault.sh -e"
+      delegate_to: localhost
