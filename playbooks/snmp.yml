@@ -4,11 +4,6 @@
   gather_facts: yes
 
   tasks:
-    - name: Check if SNMP is installed
-      shell: "rpm -q net-snmp"
-      register: snmp_status
-      ignore_errors: true
-
     - name: Install SNMP packages
       dnf:
         name: "{{ item }}"
@@ -22,7 +17,6 @@
         src: l_snmpd.conf.j2
         dest: /etc/snmp/snmpd.conf
       notify: Restart SNMP service
-      when: snmp_status.rc != 0
 
     - name: Restart SNMP service
       service:
