@@ -8,6 +8,9 @@ windows1 ansible_host=192.168.1.5 ansible_name=windows1
 centreon_ctrl ansible_host=192.168.1.2 ansible_name=centreon_ctrl
 
 [all:vars]
+ansible_connection=ssh
+ansible_user=root
+ansible_ssh_pass='Password123*'
 snmp_community="public"
 snmp_version="2c"
 secret_file="/root/vault/secrets.yml"
