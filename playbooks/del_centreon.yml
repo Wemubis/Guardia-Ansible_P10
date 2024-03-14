@@ -6,8 +6,8 @@
   tasks:
     - name: Delete monitored host
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a del -v {{ hostname }}"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
 
     - name: Export Configuration
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
