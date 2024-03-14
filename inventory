@@ -12,18 +12,18 @@ snmp_community="public"
 snmp_version="2c"
 secret_file="/root/vault/secrets.yml"
 pwd_file="/root/vault/password.txt"
-l_username="BobTheBuildeur"
-w_username="MarioBrosse"
 centreon_username="admin"
 centreon_password='Password123*'
 
 [linux:vars]
 hostname="linux_client"
 template="OS-Linux-SNMP-Custom"
+username="BobTheBuildeur"
 
 [windows:vars]
 hostname="windows_client"
 template="OS-Windows-SNMP-Custom"
+username="MarioBrosse"
 ansible_connection=winrm
 ansible_user=Administrateur
 ansible_password=Password123*
