@@ -178,7 +178,7 @@ These playbooks facilitate the rapid deployment and management of our monitoring
 # Script to Launch Files
 
 ## Overview
-This Bash script automates the execution of Ansible playbooks for installing or removing system configurations. It simplifies the management of Ansible playbooks : [script.sh](script.sh)
+This Bash script automates the execution of Ansible playbooks for installing or removing system configurations. It simplifies the management of Ansible playbooks : [`script.sh`](script.sh)
 
 <br>
 
