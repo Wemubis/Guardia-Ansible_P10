@@ -112,10 +112,10 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 In my [`inventory`](inventory), I've defined groups for hosts:
 ```bash
 [linux]
-192.168.1.4
+linux1 ansible_host=192.168.1.4 ansible_name=linux1
 
 [windows]
-192.168.1.5
+windows1 ansible_host=192.168.1.5 ansible_name=windows1
 ```
 
 I've done the same for global variables or those assigned to a specific host group:
