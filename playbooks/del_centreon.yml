@@ -1,13 +1,13 @@
 ---
-- name: Check if host exists
-  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a getparam -v '{{ item.hostname }};snmp_version'"
-  register: check_host
-  ignore_errors: true
+- name: Delete host in Centreon using CLAPI
+  hosts: linux:windows
+  gather_facts: yes
 
-- name: Delete monitored host
-  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a del -v {{ item.hostname }}"
-  when: check_host.rc == 0
+  tasks:
+    - name: Delete monitored host
+      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a del -v {{ hostname }}"
+      delegate_to: central
 
-- name: Export Configuration
-  command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
-  when: check_host.rc == 0
+    - name: Export Configuration
+      command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
+      delegate_to: central
