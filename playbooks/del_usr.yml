@@ -3,29 +3,16 @@
   hosts: linux:windows
 
   tasks:
-    - name: Check if the linux user exists
-      when: inventory_hostname in groups['linux']
-      command: "id {{ l_username }}"
-      register: user_exists
-      ignore_errors: true
-
-    - name: Delete linux user if it exists
-      when: inventory_hostname in groups['linux'] and user_exists.rc == 0
+    - name: Delete linux user
+      when: ansible_name in groups['linux']
       user:
-        name: "{{ l_username }}"
+        name: "{{ username }}"
         state: absent
 
-    - name: Check if the windows user exists
-      when: inventory_hostname in groups['windows']
-      ansible.windows.win_powershell:
-        script: "Get-LocalUser -Name {{ w_username }}"
-      register: user_exist
-      ignore_errors: true
-
-    - name: Delete windows user if it exists
-      when: inventory_hostname in groups['windows'] and '"Name" in user_exist.stdout'
+    - name: Delete windows user
+      when: ansible_name in groups['windows']
       win_user:
-        name: "{{ w_username }}"
+        name: "{{ username }}"
         state: absent
 
     - name: Create or update secrets.yml file
