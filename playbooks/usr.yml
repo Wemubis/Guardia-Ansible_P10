@@ -1,7 +1,7 @@
 ---
 - name: Manage users on Linux and Windows
   hosts: linux:windows
-  gather_facts: no
+  gather_facts: yes
 
   tasks:
     - name: Generate a random password
@@ -9,7 +9,7 @@
         random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
 
     - name: Create or update Linux user
-      when: inventory_hostname in groups['linux']
+      when: ansible_host in groups['linux']
       user:
         name: "{{ l_username }}"
         password: "{{ random_password | password_hash('sha512') }}"
@@ -17,7 +17,7 @@
         update_password: always
 
     - name: Create or update Windows user
-      when: inventory_hostname in groups['windows']
+      when: ansible_host in groups['windows']
       win_user:
         name: "{{ w_username }}"
         password: "{{ random_password | password_hash('sha512') }}"
