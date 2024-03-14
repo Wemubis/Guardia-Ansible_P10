@@ -24,7 +24,6 @@ centreon_password='Password123*'
 hostname="linux_client"
 template="OS-Linux-SNMP-Custom"
 
-
 [windows:vars]
 hostname="windows_client"
 template="OS-Windows-SNMP-Custom"
