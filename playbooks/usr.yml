@@ -9,7 +9,7 @@
         random_password: "{{ lookup('password', '/dev/null length=12 chars=ascii_letters,digits') }}"
 
     - name: Create or update Linux user
-      when: ansible_host in groups['linux']
+      when: ansible_name in groups['linux']
       user:
         name: "{{ username }}"
         password: "{{ random_password | password_hash('sha512') }}"
@@ -17,7 +17,7 @@
         update_password: always
 
     - name: Create or update Windows user
-      when: ansible_host in groups['windows']
+      when: ansible_name in groups['windows']
       win_user:
         name: "{{ username }}"
         password: "{{ random_password | password_hash('sha512') }}"
