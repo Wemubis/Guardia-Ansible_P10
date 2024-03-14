@@ -166,7 +166,7 @@ More information on Ansible Vault can be found in the [Ansible documentation](ht
 ### Centreon
 Centreon is a comprehensive IT monitoring solution that enables you to monitor your entire IT infrastructure from a single platform. The centreon script ([`install_centreon.sh`](install_centreon.sh)) install centreon on the machine.
 
-The Centreon playbooks ([`loop_centreon.yml`](playbooks/loop_centreon.yml) and [`centreon.yml`](playbooks/centreon.yml)) automate tasks such as:
+The Centreon playbooks ([`centreon.yml`](playbooks/centreon.yml)) automate tasks such as:
 - Checking if machines are already present in Centreon.
 - Adding new machines with their SNMP configurations.
 - Applying monitoring templates and exporting configurations.
