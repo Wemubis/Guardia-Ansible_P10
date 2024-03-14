@@ -25,6 +25,7 @@
         update_password: always
 
     - name: Decrypt vault file
+      delegate_to: localhost
       command: "bash /root/create_vault.sh -d"
 
     - name: Create or update secrets.yml file
@@ -36,4 +37,5 @@
         state: present
 
     - name: Encrypt vault file
+      delegate_to: localhost
       command: "bash /root/create_vault.sh -e"
