@@ -29,7 +29,7 @@
       command: "bash /root/create_vault.sh -d"
       ignore_errors: true
 
-    - name: Create or update secrets.yml file
+    - name: Update secrets.csv file
       delegate_to: localhost
       lineinfile:
         dest: "{{ secret_file }}"
