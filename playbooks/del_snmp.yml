@@ -1,63 +1,29 @@
 ---
-- name: Undo SNMP Installation and Configuration
-  hosts: linux
+- name: Undo SNMP Installation and configuration
+  hosts: linux:windows
+  gather_facts: yes
 
   tasks:
-    - name: Check if SNMP is installed
-      command: "rpm -q net-snmp"
-      register: snmp_status
-      ignore_errors: true
-
-    - name: Stop SNMP service if installed
-      service:
-        name: snmpd
-        state: stopped
-      when: snmp_status.rc == 0
-
-    - name: Disable SNMP service if installed
-      service:
-        name: snmpd
-        enabled: no
-      when: snmp_status.rc == 0
-
     - name: Uninstall SNMP packages if installed
+      when: ansible_host in groups['linux']
       dnf:
         name: "{{ item }}"
         state: absent
       loop:
         - net-snmp
         - net-snmp-utils
-      when: snmp_status.rc == 0
 
     - name: Remove SNMP configuration file if exists
+      when: ansible_host in groups['linux']
       file:
         path: /etc/snmp/snmpd.conf
         state: absent
-      when: snmp_status.rc == 0
-
-- name: Uninstall SNMP from a Windows machine
-  hosts: windows
-  gather_facts: no
-
-  tasks:
-    - name: Check if SNMP exists
-      win_reg_stat:
-        path: HKLM:\SYSTEM\CurrentControlSet\Services\SNMP
-      register: snmp_reg_stat
-
-    - name: Stop SNMP service
-      win_service:
-        name: snmp
-        state: stopped
-      when: snmp_reg_stat.exists
 
     - name: Uninstall SNMP
+      when: ansible_host in groups['windows']
       win_feature:
-        name: SNMP-Service
+        name: "{{ item }}"
         state: absent
-      when: snmp_reg_stat.exists
-
-    - name: Uninstall SNMP Feature
-      ansible.windows.win_powershell:
-        script: "Uninstall-WindowsFeature rsat-snmp"
-      when: snmp_reg_stat.exists
+      loop:
+      - SNMP-Service
+      - rsat-snmp
