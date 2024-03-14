@@ -6,20 +6,20 @@
   tasks:
     - name: Authenticate with Centreon API
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a add -v '{{ hostname }};{{ hostname }};{{ ansible_host }};{{ template }};central;'"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
 
     - name: Add SNMP community
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ hostname }};snmp_community;{{ snmp_community }}'"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
 
     - name: Add SNMP verion
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a setparam -v '{{ hostname }};snmp_version;{{ snmp_version }}'"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
 
     - name: Apply Template
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -o HOST -a applytpl -v {{ hostname }}"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
 
     - name: Export Configuration
       command: "centreon -u {{ centreon_username }} -p {{ centreon_password }} -a applycfg -v central"
-      delegate_to: central
+      delegate_to: "{{ groups['central'][0] }}"
