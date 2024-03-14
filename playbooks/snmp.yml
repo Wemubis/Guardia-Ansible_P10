@@ -16,7 +16,6 @@
       template:
         src: l_snmpd.conf.j2
         dest: /etc/snmp/snmpd.conf
-      notify: Restart SNMP service
 
     - name: Restart SNMP service
       service:
