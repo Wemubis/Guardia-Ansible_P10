@@ -7,6 +7,10 @@ windows1 ansible_host=192.168.1.5 ansible_name=windows1
 [central]
 centreon_ctrl ansible_host=192.168.1.2 ansible_name=centreon_ctrl
 
+[central:vars]
+ansible_ssh_user=root
+ansible_ssh_pass=Password123*
+
 [all:vars]
 ansible_connection=ssh
 ansible_ssh_user=root
