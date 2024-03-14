@@ -15,8 +15,20 @@
         name: "{{ username }}"
         state: absent
 
-    - name: Create or update secrets.yml file
-      ansible.builtin.template:
-        src: "{{ e_pattern_secret }}"
-        dest: "{{ secret_file }}"
+    - name: Decrypt vault file
       delegate_to: localhost
+      command: "bash /root/create_vault.sh -d"
+      ignore_errors: true
+
+    - name: Create or update secrets.yml file
+      delegate_to: localhost
+      lineinfile:
+        dest: "{{ secret_file }}"
+        regexp: "^{{ ansible_name }};"
+        line: "null;null;null"
+        state: present
+
+    - name: Encrypt vault file
+      delegate_to: localhost
+      command: "bash /root/create_vault.sh -e"
+      ignore_errors: true
