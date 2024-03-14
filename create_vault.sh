@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Variables
-SECRETS="/root/vault/secrets.yml"
+SECRETS="/root/vault/secrets.csv"
 PASSWORD="/root/vault/password.txt"
 
 
