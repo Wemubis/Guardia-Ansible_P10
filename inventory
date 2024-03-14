@@ -1,11 +1,11 @@
 [linux]
-linux1 ansible_host=192.168.1.4
+linux1 ansible_host=192.168.1.4 ansible_name=linux1
 
 [windows]
-windows1 ansible_host=192.168.1.5
+windows1 ansible_host=192.168.1.5 ansible_name=windows1
 
 [central]
-centreon_ctrl ansible_host=192.168.1.2
+centreon_ctrl ansible_host=192.168.1.2 ansible_name=centreon_ctrl
 
 [all:vars]
 snmp_community="public"
