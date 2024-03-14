@@ -40,9 +40,9 @@
     - name: Configure SNMP
       win_snmp:
         community_strings:
-          - {{ snmp_community }}
+          - "{{ snmp_community }}"
         permitted_managers:
-          - {{ hostvars['central'].ansible_host }}
+          - "{{ groups['central'][0] }}"
         action: set
 
     - name: Restart SNMP service
