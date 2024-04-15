@@ -19,12 +19,12 @@
    - [Requirements](#requirements)
    - [Usage](#usage)
 
-<br><br>
+<br>
 
 ## Introduction
 This documentation details the setup and management of a virtualized network environment utilizing VirtualBox. It includes configurations for AlmaLinux, Windows Server, and OPNSense for firewall and DNS functionalities.
 
-<br><br>
+<br>
 
 ## Machine Configuration
 
@@ -37,7 +37,7 @@ The network setup consists of five machines interconnected via an "intra" intern
 - **Client (Linux):** `192.168.1.4`
 - **Client (Windows):** `192.168.1.5`
 
-<br>
+
 
 ### OPNSense Configuration
 Configure the OPNSense machine interfaces:
@@ -49,7 +49,7 @@ Disable the firewall with:
 pfctl -d
 ```
 
-<br>
+
 
 ### AlmaLinux Configuration
 
@@ -84,7 +84,7 @@ systemctl disable firewalld
 systemctl stop firewalld
 ```
 
-<br>
+
 
 ### Client Machine (Windows)
 
@@ -103,7 +103,7 @@ Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
 - **WinRM Configuration:**
 [TODO]
 
-<br><br>
+<br>
 
 # Playbooks Configuration
 
@@ -128,7 +128,7 @@ snmp_version="2c"
 
 Assigning these variables allows for simplification when modifying the code since I only need to modify it once here.
 
-<br>
+
 
 ### SNMP
 Simple Network Management Protocol (SNMP) is essential for network management. It allows for the collection of detailed data from network devices. Before attempting to install or configure SNMP on a target machine, it's crucial to verify whether it's already installed:
@@ -140,7 +140,7 @@ Simple Network Management Protocol (SNMP) is essential for network management. I
 
 After verification, SNMP can be installed or configured accordingly. Detailed instructions and playbook examples for managing SNMP can be found in the [`SNMP playbook`](playbooks/snmp.yml).
 
-<br>
+
 
 ### Users
 By automating user creation and password management, we maintain consistency and security across our network. The playbooks handle:
@@ -152,7 +152,7 @@ This automation ensures that user accounts on both Linux and Windows systems are
 
 For more details, see the user management playbook: [`User Playbook`](playbooks/usr.yml).
 
-<br>
+
 
 ### Vault
 Ansible Vault is a feature that allows users to keep sensitive data such as passwords or keys in encrypted files, rather than as plaintext in playbooks or roles.
@@ -161,7 +161,7 @@ The vault script ([`create_vault.sh`](create_vault.sh)) simplifies working with 
 
 More information on Ansible Vault can be found in the [Ansible documentation](https://docs.ansible.com/ansible/latest/user_guide/vault.html).
 
-<br>
+
 
 ### Centreon
 Centreon is a comprehensive IT monitoring solution that enables you to monitor your entire IT infrastructure from a single platform. The centreon script ([`install_centreon.sh`](install_centreon.sh)) install centreon on the machine.
@@ -173,26 +173,26 @@ The Centreon playbooks ([`centreon.yml`](playbooks/centreon.yml)) automate tasks
 
 These playbooks facilitate the rapid deployment and management of our monitoring infrastructure, ensuring that new or updated hosts are quickly integrated into your monitoring setup. For an introduction to Centreon and instructions on manual setup, visit the [Centreon documentation](https://docs.centreon.com/current/en/).
 
-<br><br>
+<br>
 
 # Script to Launch Files
 
 ## Overview
 This Bash script automates the execution of Ansible playbooks for installing or removing system configurations. It simplifies the management of Ansible playbooks : [`script.sh`](script.sh)
 
-<br>
+
 
 ## Features
 - **Install Configurations:** Easily install configurations on systems using predefined Ansible playbooks.
 - **Remove Configurations:** Safely remove installed configurations using corresponding Ansible playbooks.
 
-<br>
+
 
 ## Requirements
 - **Ansible:** Ensure Ansible is installed and properly configured on the system where the script will be run.
 - **Inventory and Playbooks:** An inventory file and playbook files must be correctly set up and accessible to the script.
 
-<br>
+
 
 ## Usage
 To use the script, you have the following options:
