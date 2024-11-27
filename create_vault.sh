@@ -1,4 +1,3 @@
-[root@localhost ~]# vim vault.sh
 #!/bin/bash
 
 # Variables
